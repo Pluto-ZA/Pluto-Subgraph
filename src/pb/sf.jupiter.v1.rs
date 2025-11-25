@@ -110,4 +110,48 @@ pub struct JupiterAnalytics {
     #[prost(message, repeated, tag="4")]
     pub top_programs: ::prost::alloc::vec::Vec<ProgramStat>,
 }
+/// standard transaction
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransactionHistory {
+    #[prost(message, repeated, tag="1")]
+    pub transactions: ::prost::alloc::vec::Vec<TransactionItem>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TransactionItem {
+    #[prost(string, tag="1")]
+    pub signature: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub slot: u64,
+    #[prost(uint64, tag="3")]
+    pub block_time: u64,
+    #[prost(bool, tag="4")]
+    pub success: bool,
+    #[prost(string, tag="5")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag="6")]
+    pub involved_accounts: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(uint64, tag="7")]
+    pub fee: u64,
+    #[prost(string, repeated, tag="8")]
+    pub log_messages: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(message, repeated, tag="9")]
+    pub balance_changes: ::prost::alloc::vec::Vec<BalanceChange>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BalanceChange {
+    #[prost(string, tag="1")]
+    pub address: ::prost::alloc::string::String,
+    /// Empty for Native SOL, Mint Address for Tokens
+    #[prost(string, tag="2")]
+    pub mint: ::prost::alloc::string::String,
+    /// The delta (e.g., -1.5 or +200)
+    #[prost(double, tag="3")]
+    pub change: f64,
+    /// The final balance after the tx
+    #[prost(double, tag="4")]
+    pub post_balance: f64,
+}
 // @@protoc_insertion_point(module)

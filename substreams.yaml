@@ -20,6 +20,15 @@ protobuf:
 network: solana
 
 modules:
+  - name: map_relevant_transactions
+    kind: map
+    initialBlock: 31310775
+    inputs:
+      - params: string
+      - source: sf.solana.type.v1.Block
+    output:
+      type: proto:sf.jupiter.v1.TransactionHistory
+
   - name: map_spl_initialized_account
     kind: map
     initialBlock: 31310775

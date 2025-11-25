@@ -5,11 +5,14 @@ pub mod jupiter_trading_store;
 pub mod token_price_store;
 pub mod jupiter_instructions;
 pub mod jupiter_analytics;
+pub mod transactions;
+
 pub use spl_account_store::map_spl_initialized_account;
 pub use jupiter_trading_store::map_jupiter_trading_data;
 pub use token_price_store::map_token_prices;
 pub use jupiter_instructions::map_jupiter_instructions;
 pub use jupiter_analytics::map_jupiter_analytics;
+pub use transactions::map_relevant_transactions;
 
 use std::collections::HashSet;
 use substreams_solana::pb::sf::solana::r#type::v1::ConfirmedTransaction;

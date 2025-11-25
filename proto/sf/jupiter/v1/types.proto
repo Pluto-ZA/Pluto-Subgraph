@@ -70,3 +70,26 @@ message JupiterAnalytics {
   repeated ProgramStat top_programs = 4;
 }
 
+//standard transaction
+message TransactionHistory {
+  repeated TransactionItem transactions = 1;
+}
+
+message TransactionItem {
+  string signature = 1;
+  uint64 slot = 2;
+  uint64 block_time = 3;
+  bool success = 4;
+  string sender = 5;
+  repeated string involved_accounts = 6;
+  uint64 fee = 7;
+  repeated string log_messages = 8;
+  repeated BalanceChange balance_changes = 9;
+}
+
+message BalanceChange {
+  string address = 1;
+  string mint = 2;         // Empty for Native SOL, Mint Address for Tokens
+  double change = 3;       // The delta (e.g., -1.5 or +200)
+  double post_balance = 4; // The final balance after the tx
+}
