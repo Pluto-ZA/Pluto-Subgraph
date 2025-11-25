@@ -32,6 +32,7 @@ modules:
     kind: map
     initialBlock: 31310775
     inputs:
+      - params: string
       - source: sf.solana.type.v1.Block
     output:
       type: proto:sf.jupiter.v1.TradingDataList
@@ -48,6 +49,7 @@ modules:
     kind: map
     initialBlock: 31310775
     inputs:
+      - params: string
       - source: sf.solana.type.v1.Block
       - map: map_spl_initialized_account
       - map: map_jupiter_trading_data

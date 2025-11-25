@@ -7,14 +7,18 @@ use crate::pb::sf::jupiter::v1::{
 };
 use substreams::errors::Error;
 use substreams_solana::{base58, pb::sf::solana::r#type::v1::Block};
+use crate::{is_relevant_tx, parse_filters};
 
 #[substreams::handlers::map]
 pub fn map_jupiter_instructions(
+    params: String, // <--- Add this input
     block: Block,
     owner_records: AccountOwnerRecords,
     trading_data: TradingDataList,
     token_prices: TokenPriceList,
 ) -> Result<JupiterInstructions, Error> {
+    let filter_addresses = parse_filters(&params);
+
     let owner_index = build_owner_index(owner_records);
     let price_index = build_price_index(token_prices);
     let trades_by_tx = group_trades_by_tx(trading_data);
@@ -27,6 +31,11 @@ pub fn map_jupiter_instructions(
         .unwrap_or_default();
 
     for trx in block.transactions() {
+        // 2. Apply Filter
+        if !is_relevant_tx(&trx, &filter_addresses) {
+            continue;
+        }
+
         let tx_id = trx.id();
         let trade_data = trades_by_tx.get(&tx_id);
 

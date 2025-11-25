@@ -1,10 +1,14 @@
+use std::collections::HashSet;
 use crate::constants::JUPITER_PROGRAM_IDS;
 use crate::pb::sf::jupiter::v1::{TradingData, TradingDataList};
 use substreams::errors::Error;
 use substreams_solana::pb::sf::solana::r#type::v1::Block;
+use crate::{is_relevant_tx, parse_filters};
 
 #[substreams::handlers::map]
-pub fn map_jupiter_trading_data(block: Block) -> Result<TradingDataList, Error> {
+pub fn map_jupiter_trading_data(params: String, block: Block) -> Result<TradingDataList, Error> {
+    let filter_addresses = parse_filters(&params);
+
     let mut items = Vec::new();
     let block_time = block
         .block_time
@@ -13,6 +17,10 @@ pub fn map_jupiter_trading_data(block: Block) -> Result<TradingDataList, Error> 
         .unwrap_or_default();
 
     for trx in block.transactions() {
+        if !is_relevant_tx(&trx, &filter_addresses) {
+            continue;
+        }
+
         let tx_id = trx.id();
 
         for instruction in trx.walk_instructions() {
