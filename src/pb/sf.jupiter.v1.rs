@@ -15,6 +15,8 @@ pub struct TradingData {
     pub slot: u64,
     #[prost(uint64, tag="6")]
     pub block_time: u64,
+    #[prost(message, repeated, tag="7")]
+    pub balance_changes: ::prost::alloc::vec::Vec<BalanceChange>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

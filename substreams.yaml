@@ -20,6 +20,27 @@ protobuf:
 network: solana
 
 modules:
+  # --- PIPELINE 1: GLOBAL PRICING (No filters) ---
+
+  - name: map_global_token_prices
+    kind: map
+    initialBlock: 31310775
+    inputs:
+      - source: sf.solana.type.v1.Block
+    output:
+      type: proto:sf.jupiter.v1.TokenPriceList
+
+  - name: store_token_prices
+    kind: store
+    initialBlock: 31310775
+    updatePolicy: set
+    valueType: float64
+    inputs:
+      - map: map_global_token_prices
+
+
+  # --- PIPELINE 2: FILTERED USER TRACKING ---
+
   # 1. STORE: Balances
   - name: store_portfolio_balances
     kind: store
@@ -29,7 +50,6 @@ modules:
     inputs:
       - map: map_relevant_transactions # Uses the output from your tx parser
 
-  # 2. STORE: Volume
   - name: store_trading_volume
     kind: store
     initialBlock: 31310775
@@ -37,6 +57,8 @@ modules:
     valueType: float64
     inputs:
       - map: map_jupiter_trading_data
+      - store: store_token_prices
+
 
   # 3. MAP: Final Aggregates (Output Deltas)
   - name: map_stats_updates
@@ -77,14 +99,6 @@ modules:
     output:
       type: proto:sf.jupiter.v1.TradingDataList
 
-  - name: map_token_prices
-    kind: map
-    initialBlock: 31310775
-    inputs:
-      - map: map_jupiter_trading_data
-    output:
-      type: proto:sf.jupiter.v1.TokenPriceList
-
   - name: map_jupiter_instructions
     kind: map
     initialBlock: 31310775
@@ -97,10 +111,10 @@ modules:
     output:
       type: proto:sf.jupiter.v1.JupiterInstructions
 
-  - name: map_jupiter_analytics
-    kind: map
-    initialBlock: 31310775
-    inputs:
-      - map: map_jupiter_instructions
-    output:
-      type: proto:sf.jupiter.v1.JupiterAnalytics
+#  - name: map_jupiter_analytics
+#    kind: map
+#    initialBlock: 31310775
+#    inputs:
+#      - map: map_jupiter_instructions
+#    output:
+#      type: proto:sf.jupiter.v1.JupiterAnalytics

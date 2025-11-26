@@ -2,7 +2,7 @@ use crate::constants::JUPITER_PROGRAM_IDS;
 use crate::pb::sf::jupiter::v1::{TradingData, TradingDataList};
 use substreams::errors::Error;
 use substreams_solana::pb::sf::solana::r#type::v1::Block;
-use crate::{is_relevant_tx, parse_filters};
+use crate::{calculate_balance_changes, is_relevant_tx, parse_filters};
 
 #[substreams::handlers::map]
 pub fn map_jupiter_trading_data(params: String, block: Block) -> Result<TradingDataList, Error> {
@@ -41,12 +41,15 @@ pub fn map_jupiter_trading_data(params: String, block: Block) -> Result<TradingD
                 data: instruction.data().clone(),
                 slot: block.slot,
                 block_time,
+                balance_changes: calculate_balance_changes(&trx),
             });
         }
     }
 
     Ok(TradingDataList { items })
 }
+
+
 
 fn is_jupiter_program(program_id: &str) -> bool {
     JUPITER_PROGRAM_IDS.iter().any(|id| id == &program_id)

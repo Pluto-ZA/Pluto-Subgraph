@@ -11,7 +11,9 @@ message TradingData {
   bytes data = 4;
   uint64 slot = 5;
   uint64 block_time = 6;
+    repeated BalanceChange balance_changes = 7;
 }
+
 
 message TokenPrice {
   string mint_address = 1;
