@@ -154,4 +154,27 @@ pub struct BalanceChange {
     #[prost(double, tag="4")]
     pub post_balance: f64,
 }
+/// Aggregate data
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WalletAggregates {
+    #[prost(string, tag="1")]
+    pub wallet: ::prost::alloc::string::String,
+    #[prost(double, tag="2")]
+    pub total_trading_volume_usd: f64,
+    /// Map of "YYYY-MM" -> Volume
+    #[prost(map="string, double", tag="3")]
+    pub monthly_trading_volume_usd: ::std::collections::HashMap<::prost::alloc::string::String, f64>,
+    /// Current Portfolio State
+    #[prost(message, repeated, tag="4")]
+    pub portfolio: ::prost::alloc::vec::Vec<TokenBalance>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TokenBalance {
+    #[prost(string, tag="1")]
+    pub mint: ::prost::alloc::string::String,
+    #[prost(double, tag="2")]
+    pub amount: f64,
+}
 // @@protoc_insertion_point(module)

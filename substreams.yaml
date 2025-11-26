@@ -20,6 +20,37 @@ protobuf:
 network: solana
 
 modules:
+  # 1. STORE: Balances
+  - name: store_portfolio_balances
+    kind: store
+    initialBlock: 31310775
+    updatePolicy: add
+    valueType: float64
+    inputs:
+      - map: map_relevant_transactions # Uses the output from your tx parser
+
+  # 2. STORE: Volume
+  - name: store_trading_volume
+    kind: store
+    initialBlock: 31310775
+    updatePolicy: add
+    valueType: float64
+    inputs:
+      - map: map_jupiter_trading_data
+
+  # 3. MAP: Final Aggregates (Output Deltas)
+  - name: map_stats_updates
+    kind: map
+    initialBlock: 31310775
+    inputs:
+      - store: store_portfolio_balances
+        mode: deltas
+      - store: store_trading_volume
+        mode: deltas
+    output:
+      type: proto:sf.jupiter.v1.WalletAggregates
+
+  # standard transactions
   - name: map_relevant_transactions
     kind: map
     initialBlock: 31310775

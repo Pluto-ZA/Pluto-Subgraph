@@ -93,3 +93,19 @@ message BalanceChange {
   double change = 3;       // The delta (e.g., -1.5 or +200)
   double post_balance = 4; // The final balance after the tx
 }
+
+// Aggregate data
+message WalletAggregates {
+  string wallet = 1;
+  double total_trading_volume_usd = 2;
+  // Map of "YYYY-MM" -> Volume
+  map<string, double> monthly_trading_volume_usd = 3;
+
+  // Current Portfolio State
+  repeated TokenBalance portfolio = 4;
+}
+
+message TokenBalance {
+  string mint = 1;
+  double amount = 2;
+}

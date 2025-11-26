@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use crate::constants::JUPITER_PROGRAM_IDS;
 use crate::pb::sf::jupiter::v1::{TradingData, TradingDataList};
 use substreams::errors::Error;
