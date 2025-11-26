@@ -96,6 +96,10 @@ message BalanceChange {
   double post_balance = 4; // The final balance after the tx
 }
 
+message WalletAggregatesList {
+    repeated WalletAggregates items = 1;
+}
+
 // Aggregate data
 message WalletAggregates {
   string wallet = 1;
@@ -110,4 +114,5 @@ message WalletAggregates {
 message TokenBalance {
   string mint = 1;
   double amount = 2;
+    double value_usd = 3;
 }

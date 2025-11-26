@@ -156,6 +156,12 @@ pub struct BalanceChange {
     #[prost(double, tag="4")]
     pub post_balance: f64,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct WalletAggregatesList {
+    #[prost(message, repeated, tag="1")]
+    pub items: ::prost::alloc::vec::Vec<WalletAggregates>,
+}
 /// Aggregate data
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -178,5 +184,7 @@ pub struct TokenBalance {
     pub mint: ::prost::alloc::string::String,
     #[prost(double, tag="2")]
     pub amount: f64,
+    #[prost(double, tag="3")]
+    pub value_usd: f64,
 }
 // @@protoc_insertion_point(module)

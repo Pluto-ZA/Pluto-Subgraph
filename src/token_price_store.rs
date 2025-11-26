@@ -1,5 +1,5 @@
 use crate::pb::sf::jupiter::v1::TokenPriceList;
-use substreams::store::{StoreNew, StoreSet, StoreSetFloat64, StoreSetProto};
+use substreams::store::{StoreNew, StoreSet, StoreSetFloat64};
 
 #[substreams::handlers::store]
 pub fn store_token_prices(price_list: TokenPriceList, output: StoreSetFloat64) {

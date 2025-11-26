@@ -69,8 +69,9 @@ modules:
         mode: deltas
       - store: store_trading_volume
         mode: deltas
+      - store: store_token_prices
     output:
-      type: proto:sf.jupiter.v1.WalletAggregates
+      type: proto:sf.jupiter.v1.WalletAggregatesList
 
   # standard transactions
   - name: map_relevant_transactions
