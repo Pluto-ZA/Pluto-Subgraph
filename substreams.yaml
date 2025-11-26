@@ -107,7 +107,7 @@ modules:
       - source: sf.solana.type.v1.Block
       - map: map_spl_initialized_account
       - map: map_jupiter_trading_data
-      - map: map_token_prices
+      - map: map_global_token_prices
     output:
       type: proto:sf.jupiter.v1.JupiterInstructions
 
