@@ -75,7 +75,7 @@ modules:
 
   - name: db_out
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - map: map_balance_changes
     output:
