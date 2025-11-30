@@ -110,4 +110,36 @@ pub struct JupiterAnalytics {
     #[prost(message, repeated, tag="4")]
     pub top_programs: ::prost::alloc::vec::Vec<ProgramStat>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BalanceChange {
+    #[prost(string, tag="1")]
+    pub block_date: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub block_time: u64,
+    #[prost(uint64, tag="3")]
+    pub block_slot: u64,
+    #[prost(string, tag="4")]
+    pub tx_id: ::prost::alloc::string::String,
+    /// The wallet address
+    #[prost(string, tag="5")]
+    pub owner: ::prost::alloc::string::String,
+    /// The token address
+    #[prost(string, tag="6")]
+    pub mint: ::prost::alloc::string::String,
+    /// The delta (can be negative)
+    #[prost(string, tag="7")]
+    pub change_amount: ::prost::alloc::string::String,
+    /// The resulting balance
+    #[prost(string, tag="8")]
+    pub new_balance: ::prost::alloc::string::String,
+    #[prost(uint32, tag="9")]
+    pub decimals: u32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BalanceChanges {
+    #[prost(message, repeated, tag="1")]
+    pub params: ::prost::alloc::vec::Vec<BalanceChange>,
+}
 // @@protoc_insertion_point(module)

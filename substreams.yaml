@@ -22,7 +22,7 @@ network: solana
 modules:
   - name: map_spl_initialized_account
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - source: sf.solana.type.v1.Block
     output:
@@ -30,7 +30,7 @@ modules:
 
   - name: map_jupiter_trading_data
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - source: sf.solana.type.v1.Block
     output:
@@ -38,7 +38,7 @@ modules:
 
   - name: map_token_prices
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - map: map_jupiter_trading_data
     output:
@@ -46,7 +46,7 @@ modules:
 
   - name: map_jupiter_instructions
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - source: sf.solana.type.v1.Block
       - map: map_spl_initialized_account
@@ -57,8 +57,16 @@ modules:
 
   - name: map_jupiter_analytics
     kind: map
-    initialBlock: 31310775
+    initialBlock: 376967294
     inputs:
       - map: map_jupiter_instructions
     output:
       type: proto:sf.jupiter.v1.JupiterAnalytics
+
+  - name: map_balance_changes
+    kind: map
+    initialBlock: 376967294
+    inputs:
+      - source: sf.solana.type.v1.Block
+    output:
+      type: proto:sf.jupiter.v1.BalanceChanges

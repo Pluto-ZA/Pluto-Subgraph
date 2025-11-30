@@ -19,5 +19,6 @@ prost-types = "0.13"
 anyhow = "1.0"
 hex = "0.4"
 bs58 = "0.5"
+chrono = "0.4.42"
 
 # JWT Testing dependencies

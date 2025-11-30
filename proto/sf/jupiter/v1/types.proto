@@ -70,3 +70,18 @@ message JupiterAnalytics {
   repeated ProgramStat top_programs = 4;
 }
 
+message BalanceChange {
+    string block_date = 1;
+    uint64 block_time = 2;
+    uint64 block_slot = 3;
+    string tx_id = 4;
+    string owner = 5;          // The wallet address
+    string mint = 6;           // The token address
+    string change_amount = 7;  // The delta (can be negative)
+    string new_balance = 8;    // The resulting balance
+    uint32 decimals = 9;
+}
+
+message BalanceChanges {
+    repeated BalanceChange params = 1;
+}
