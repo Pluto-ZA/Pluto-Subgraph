@@ -1,0 +1,6 @@
+package sf.substreams.sink.sql.v1;
+
+// The service configuration for the SQL sink.
+// It is currently empty but required for the sink block definition.
+message Service {
+}

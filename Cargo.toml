@@ -12,6 +12,7 @@ crate-type = ["cdylib"]
 # Substreams core dependencies
 substreams = "0.7"
 substreams-solana = "0.14.2"
+substreams-database-change = "3.0.0"
 
 # Additional dependencies for Jupiter DEX
 prost = "0.13"

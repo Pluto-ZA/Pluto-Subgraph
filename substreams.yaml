@@ -13,6 +13,8 @@ protobuf:
   files:
     - jupiter/events/v1/events.proto
     - proto/sf/jupiter/v1/types.proto
+    - proto/sf/substreams/sink/database/v1/database.proto
+    - proto/sf/substreams/sink/sql/v1/service.proto
   importPaths:
     - jupiter
     - proto
@@ -70,3 +72,16 @@ modules:
       - source: sf.solana.type.v1.Block
     output:
       type: proto:sf.jupiter.v1.BalanceChanges
+
+  - name: db_out
+    kind: map
+    initialBlock: 31310775
+    inputs:
+      - map: map_balance_changes
+    output:
+      type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
