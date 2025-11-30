@@ -69,6 +69,7 @@ modules:
     kind: map
     initialBlock: 376967294
     inputs:
+      - params: string
       - source: sf.solana.type.v1.Block
     output:
       type: proto:sf.jupiter.v1.BalanceChanges
@@ -77,6 +78,7 @@ modules:
     kind: map
     initialBlock: 376967294
     inputs:
+      - params: string
       - map: map_balance_changes
     output:
       type: proto:sf.substreams.sink.database.v1.DatabaseChanges
