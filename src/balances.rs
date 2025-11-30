@@ -2,13 +2,19 @@ use substreams_solana::pb::sf::solana::r#type::v1 as solana;
 use crate::pb::sf::jupiter::v1::{BalanceChange, BalanceChanges};
 use std::collections::HashMap;
 use chrono::{DateTime, NaiveDateTime, Utc};
+
+// Standard Wrapped SOL Mint address.
+// We use this to represent Native SOL so it groups nicely with SPL tokens in your DB.
+const WRAPPED_SOL_MINT: &str = "So11111111111111111111111111111111111111112";
+const LAMPORTS_PER_SOL: f64 = 1_000_000_000.0;
+
 #[substreams::handlers::map]
 pub fn map_balance_changes(block: solana::Block) -> Result<BalanceChanges, substreams::errors::Error> {
     let mut balance_changes = vec![];
 
     let timestamp = block.block_time.as_ref().map(|t| t.timestamp).unwrap_or(0);
 
-    // Create a readable date string (YYYY-MM-DD)
+    // Create a readable date string
     let dt = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap_or_default(), Utc);
     let block_date = dt.format("%Y-%m-%d").to_string();
 
@@ -21,6 +27,7 @@ pub fn map_balance_changes(block: solana::Block) -> Result<BalanceChanges, subst
                 continue;
             }
 
+            // Extract Transaction ID
             let tx_id = match &trx.transaction {
                 Some(inner_tx) => {
                     if inner_tx.signatures.is_empty() {
@@ -31,12 +38,61 @@ pub fn map_balance_changes(block: solana::Block) -> Result<BalanceChanges, subst
                 None => continue,
             };
 
-            // 1. Map Pre-Balances: Key = (Account Index, Mint) -> Amount
-            // We use account index because it's consistent within the tx meta
+            // Get the list of accounts involved in this transaction
+            // We need this to map Native SOL balance indices to actual Addresses
+            let accounts = match &trx.transaction {
+                Some(t) => &t.message.as_ref().unwrap().account_keys,
+                None => continue,
+            };
+
+            // ---------------------------------------------------------
+            // 1. HANDLE NATIVE SOL CHANGES
+            // ---------------------------------------------------------
+            if meta.pre_balances.len() == meta.post_balances.len() {
+                for (i, pre_lamports) in meta.pre_balances.iter().enumerate() {
+                    let post_lamports = meta.post_balances[i];
+
+                    // Optimization: Skip if no change (saves massive processing)
+                    if *pre_lamports == post_lamports {
+                        continue;
+                    }
+
+                    // We can only map balances if we can resolve the account address.
+                    // accounts[i] corresponds to pre_balances[i] for standard accounts.
+                    if i < accounts.len() {
+                        let address = bs58::encode(&accounts[i]).into_string();
+
+                        let pre_amt = *pre_lamports as f64 / LAMPORTS_PER_SOL;
+                        let post_amt = post_lamports as f64 / LAMPORTS_PER_SOL;
+
+                        // Filter dust (optional, but recommended)
+                        if (post_amt - pre_amt).abs() < f64::EPSILON {
+                            continue;
+                        }
+
+                        balance_changes.push(BalanceChange {
+                            block_date: block_date.clone(),
+                            block_time: timestamp as u64,
+                            block_slot: slot,
+                            tx_id: tx_id.clone(),
+                            owner: address,
+                            mint: WRAPPED_SOL_MINT.to_string(), // Use "So111..." to denote SOL
+                            change_amount: (post_amt - pre_amt).to_string(),
+                            new_balance: post_amt.to_string(),
+                            decimals: 9,
+                        });
+                    }
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 2. HANDLE SPL TOKEN CHANGES (Existing Logic)
+            // ---------------------------------------------------------
+
+            // Map Pre-Balances: Key = (Account Index, Mint) -> Amount
             let mut pre_balances: HashMap<(u32, String), f64> = HashMap::new();
 
             for balance in &meta.pre_token_balances {
-                // Ensure we have an owner to attribute this to
                 if balance.owner.is_empty() { continue; }
 
                 let amount: f64 = balance.ui_token_amount.as_ref()
@@ -46,7 +102,6 @@ pub fn map_balance_changes(block: solana::Block) -> Result<BalanceChanges, subst
                 pre_balances.insert((balance.account_index, balance.mint.clone()), amount);
             }
 
-            // 2. Iterate Post-Balances and compare
             for post_balance in &meta.post_token_balances {
                 if post_balance.owner.is_empty() { continue; }
 
@@ -61,10 +116,8 @@ pub fn map_balance_changes(block: solana::Block) -> Result<BalanceChanges, subst
                     .map(|a| a.decimals)
                     .unwrap_or(0);
 
-                // Get the pre-balance (default to 0 if this is a new account/mint interaction)
                 let pre_amount = pre_balances.get(&(account_idx, mint.clone())).copied().unwrap_or(0.0);
 
-                // 3. If balance changed, record it
                 if (post_amount - pre_amount).abs() > f64::EPSILON {
                     balance_changes.push(BalanceChange {
                         block_date: block_date.clone(),
