@@ -22,48 +22,48 @@ protobuf:
 network: solana
 
 modules:
-  - name: map_spl_initialized_account
-    kind: map
-    initialBlock: 376967294
-    inputs:
-      - source: sf.solana.type.v1.Block
-    output:
-      type: proto:sf.jupiter.v1.AccountOwnerRecords
-
-  - name: map_jupiter_trading_data
-    kind: map
-    initialBlock: 376967294
-    inputs:
-      - source: sf.solana.type.v1.Block
-    output:
-      type: proto:sf.jupiter.v1.TradingDataList
-
-  - name: map_token_prices
-    kind: map
-    initialBlock: 376967294
-    inputs:
-      - map: map_jupiter_trading_data
-    output:
-      type: proto:sf.jupiter.v1.TokenPriceList
-
-  - name: map_jupiter_instructions
-    kind: map
-    initialBlock: 376967294
-    inputs:
-      - source: sf.solana.type.v1.Block
-      - map: map_spl_initialized_account
-      - map: map_jupiter_trading_data
-      - map: map_token_prices
-    output:
-      type: proto:sf.jupiter.v1.JupiterInstructions
-
-  - name: map_jupiter_analytics
-    kind: map
-    initialBlock: 376967294
-    inputs:
-      - map: map_jupiter_instructions
-    output:
-      type: proto:sf.jupiter.v1.JupiterAnalytics
+#  - name: map_spl_initialized_account
+#    kind: map
+#    initialBlock: 376967294
+#    inputs:
+#      - source: sf.solana.type.v1.Block
+#    output:
+#      type: proto:sf.jupiter.v1.AccountOwnerRecords
+#
+#  - name: map_jupiter_trading_data
+#    kind: map
+#    initialBlock: 376967294
+#    inputs:
+#      - source: sf.solana.type.v1.Block
+#    output:
+#      type: proto:sf.jupiter.v1.TradingDataList
+#
+#  - name: map_token_prices
+#    kind: map
+#    initialBlock: 376967294
+#    inputs:
+#      - map: map_jupiter_trading_data
+#    output:
+#      type: proto:sf.jupiter.v1.TokenPriceList
+#
+#  - name: map_jupiter_instructions
+#    kind: map
+#    initialBlock: 376967294
+#    inputs:
+#      - source: sf.solana.type.v1.Block
+#      - map: map_spl_initialized_account
+#      - map: map_jupiter_trading_data
+#      - map: map_token_prices
+#    output:
+#      type: proto:sf.jupiter.v1.JupiterInstructions
+#
+#  - name: map_jupiter_analytics
+#    kind: map
+#    initialBlock: 376967294
+#    inputs:
+#      - map: map_jupiter_instructions
+#    output:
+#      type: proto:sf.jupiter.v1.JupiterAnalytics
 
   - name: map_balance_changes
     kind: map
