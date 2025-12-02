@@ -80,6 +80,7 @@ message BalanceChange {
     string change_amount = 7;  // The delta (can be negative)
     string new_balance = 8;    // The resulting balance
     uint32 decimals = 9;
+    string change_type = 10;
 }
 
 message BalanceChanges {
