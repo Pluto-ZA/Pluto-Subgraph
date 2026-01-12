@@ -81,6 +81,7 @@ message BalanceChange {
     string new_balance = 8;    // The resulting balance
     uint32 decimals = 9;
     string change_type = 10;
+    double network_fee = 11;
 }
 
 message BalanceChanges {

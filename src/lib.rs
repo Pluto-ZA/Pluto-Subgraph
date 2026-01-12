@@ -35,7 +35,8 @@ pub fn db_out(changes: BalanceChanges) -> Result<DatabaseChanges, substreams::er
             .set("mint", change.mint)
             .set("change_amount", change.change_amount)
             .set("new_balance", change.new_balance)
-            .set("decimals", change.decimals);
+            .set("decimals", change.decimals)
+            .set("network_fee", change.network_fee.to_string());
     }
 
     Ok(tables.to_database_changes())

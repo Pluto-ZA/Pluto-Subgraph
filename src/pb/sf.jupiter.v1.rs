@@ -135,6 +135,10 @@ pub struct BalanceChange {
     pub new_balance: ::prost::alloc::string::String,
     #[prost(uint32, tag="9")]
     pub decimals: u32,
+    #[prost(string, tag="10")]
+    pub change_type: ::prost::alloc::string::String,
+    #[prost(double, tag="11")]
+    pub network_fee: f64,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

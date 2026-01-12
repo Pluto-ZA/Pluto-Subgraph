@@ -1,7 +1,7 @@
 use substreams_solana::pb::sf::solana::r#type::v1 as solana;
 use crate::pb::sf::jupiter::v1::{BalanceChange, BalanceChanges};
 use std::collections::{HashMap, HashSet};
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::{DateTime};
 use substreams_solana::base58;
 
 // --- CONSTANTS ---
@@ -54,7 +54,7 @@ pub fn map_balance_changes(params: String, block: solana::Block) -> Result<Balan
 
     // Timestamp & Date
     let timestamp = block.block_time.as_ref().map(|t| t.timestamp).unwrap_or(0);
-    let dt = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap_or_default(), Utc);
+    let dt = DateTime::from_timestamp(timestamp, 0).unwrap_or_default();
     let block_date = dt.format("%Y-%m-%d").to_string();
     let slot = block.slot;
 
@@ -73,6 +73,7 @@ pub fn map_balance_changes(params: String, block: solana::Block) -> Result<Balan
                 },
                 None => continue,
             };
+            let network_fee = meta.fee as f64 / LAMPORTS_PER_SOL;
 
             // Unpack Message
             let message = match trx.transaction.as_ref().and_then(|t| t.message.as_ref()) {
@@ -199,6 +200,7 @@ pub fn map_balance_changes(params: String, block: solana::Block) -> Result<Balan
                             new_balance: post_amt.to_string(),
                             decimals: 9,
                             change_type: detected_type.clone(),
+                            network_fee,
                         });
                     }
                 }
@@ -239,6 +241,7 @@ pub fn map_balance_changes(params: String, block: solana::Block) -> Result<Balan
                         new_balance: post_amount.to_string(),
                         decimals,
                         change_type: detected_type.clone(),
+                        network_fee,
                     });
                 }
             }
